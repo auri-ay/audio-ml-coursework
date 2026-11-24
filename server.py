@@ -87,12 +87,12 @@ def thing():
 
     # Pedalboard can load mp3
     with AudioFile(io.BytesIO(body["dataUrl"]["data"])) as f:
-        x = f.read(f.frames)
-        sr = f.samplerate
+        x_stereo = f.read(f.frames)
+        original_sr = f.samplerate
 
-    x = librosa.to_mono(x)
-    librosa.resample(x, orig_sr=sr, target_sr=22050) # librosa default sample rate
-
+    x_mono = librosa.to_mono(x_stereo)
+    sr = 22050
+    x = librosa.resample(x_mono, orig_sr=original_sr, target_sr=sr) # librosa default sample rate
     # modify x as needed here
     x = process_audio(body["setting"], x, sr)
 
