@@ -2,6 +2,7 @@ const uploadButton = document.getElementById("upload-button")
 const fileUpload = document.getElementById("file-upload");
 const audioPlayer = document.getElementById("audio-player");
 
+
 class Setting{
     constructor(gain, low, mid, treble) {
         this.gain = gain;

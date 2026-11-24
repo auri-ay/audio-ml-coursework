@@ -55,8 +55,11 @@ def parse_data_url(s: str) -> DataURL:
 
 
 def dataurl_to_str(s: DataURL) -> str:
-    return f"data:{s["media_type"]};base64,{base64.b64encode(s["data"]).decode("utf-8")}"
+    return f"data:{s["media_type"]};base64,{base64.b64encode(s["data"]).decode("ascii")}"
 
+def process_audio(setting: AmpSetting, x, sr):
+    # code to process X using the setting
+    return x
 
 app = Flask(__name__)
 
@@ -71,16 +74,16 @@ def serve(path):
     return flask.send_from_directory("web/", path)
 
 
-@app.route('/api/thing', methods=['POST'])
+@app.route('/api/applyVst', methods=['POST'])
 def thing():
-    body: PostRequest[DataURL] = parse_request(cast(PostRequest[str], request.get_json()))
+    body: PostRequest[DataURL] = parse_request(request.get_json())
 
     x, sr = soundfile.read(io.BytesIO(body["dataUrl"]["data"]))
 
+    # modify x as needed here
+
     output = io.BytesIO()
     soundfile.write(output, x, sr, format="ogg")
-
-    Path("thing.mp3").write_bytes(output.getvalue())
 
     response = PostRequest(dataUrl=DataURL(data=base64.b64encode(output.getvalue()), media_type="audio/ogg"),
                            setting=body["setting"])
@@ -89,4 +92,4 @@ def thing():
 
 
 if __name__ == '__main__':
-    app.run(debug=True, host="127.0.0.1", port=8080)
+    app.run(debug=True, host="127.0.0.1", port=8081)
