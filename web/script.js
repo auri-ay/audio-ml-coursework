@@ -1,6 +1,6 @@
 const uploadButton = document.getElementById("upload-button")
 const fileUpload = document.getElementById("file-upload");
-const audioPlayer = document.getElementById("audio-player");
+const   audioPlayer = document.getElementById("audio-player");
 
 
 class Setting{
@@ -32,7 +32,7 @@ uploadButton.onclick = () => {
 
 function sendPost(){
     const xhr = new XMLHttpRequest();
-    xhr.open("POST", "/api/thing");
+    xhr.open("POST", "/api/applyVst");
     xhr.setRequestHeader('Content-Type', 'application/json');
     xhr.send(JSON.stringify({
         dataUrl: uploadedFile,

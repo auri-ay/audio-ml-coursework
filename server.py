@@ -7,9 +7,11 @@ import flask
 from flask import Flask, request
 import soundfile
 
+
 class DataURL(TypedDict):
     media_type: str | None
     data: bytes
+
 
 class AmpSetting(TypedDict):
     gain: float
@@ -22,6 +24,7 @@ class PostRequest[D: str | DataURL](TypedDict):
     setting: AmpSetting
     dataUrl: D
 
+
 def parse_request(r: PostRequest[str]) -> PostRequest[DataURL]:
     n = cast(PostRequest[DataURL], r)
     n["dataUrl"] = parse_data_url(r["dataUrl"])
@@ -32,9 +35,6 @@ def convert_response(r: PostRequest[DataURL]) -> PostRequest[str]:
     n = cast(PostRequest[str], r)
     n["dataUrl"] = dataurl_to_str(r["dataUrl"])
     return n
-
-
-
 
 
 def parse_data_url(s: str) -> DataURL:
@@ -57,9 +57,11 @@ def parse_data_url(s: str) -> DataURL:
 def dataurl_to_str(s: DataURL) -> str:
     return f"data:{s["media_type"]};base64,{base64.b64encode(s["data"]).decode("ascii")}"
 
+
 def process_audio(setting: AmpSetting, x, sr):
     # code to process X using the setting
     return x
+
 
 app = Flask(__name__)
 
@@ -81,6 +83,7 @@ def thing():
     x, sr = soundfile.read(io.BytesIO(body["dataUrl"]["data"]))
 
     # modify x as needed here
+    x = process_audio(body["setting"], x, sr)
 
     output = io.BytesIO()
     soundfile.write(output, x, sr, format="ogg")
