@@ -85,7 +85,7 @@ def thing():
     output = io.BytesIO()
     soundfile.write(output, x, sr, format="ogg")
 
-    response = PostRequest(dataUrl=DataURL(data=base64.b64encode(output.getvalue()), media_type="audio/ogg"),
+    response = PostRequest(dataUrl=DataURL(data=output.getvalue(), media_type="audio/ogg"),
                            setting=body["setting"])
 
     return convert_response(response)
