@@ -4,8 +4,12 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import TypedDict, cast, overload, Any, Unpack, NamedTuple, ReadOnly
 import flask
+import librosa
+import pedalboard
 from flask import Flask, request
 import soundfile
+from pedalboard_native.io import AudioFile
+import numpy as np
 
 
 class DataURL(TypedDict):
@@ -81,7 +85,13 @@ def serve(path):
 def thing():
     body: PostRequest[DataURL] = parse_request(request.get_json())
 
-    x, sr = soundfile.read(io.BytesIO(body["dataUrl"]["data"]))
+    # Pedalboard can load mp3
+    with AudioFile(io.BytesIO(body["dataUrl"]["data"])) as f:
+        x = f.read(f.frames)
+        sr = f.samplerate
+
+    x = librosa.to_mono(x)
+    librosa.resample(x, orig_sr=sr, target_sr=22050) # librosa default sample rate
 
     # modify x as needed here
     x = process_audio(body["setting"], x, sr)
