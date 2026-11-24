@@ -60,6 +60,7 @@ def dataurl_to_str(s: DataURL) -> str:
 
 def process_audio(setting: AmpSetting, x, sr):
     # code to process X using the setting
+    print(setting)
     return x
 
 

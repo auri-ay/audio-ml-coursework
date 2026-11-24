@@ -14,16 +14,58 @@
 
 <main>
     <div class="column">
+        <h1>Proof of concept</h1>
+        <h2>Upload</h2>
         <label>
             <input type="file" id="file-upload">
         </label>
+        <h2>Preview</h2>
+        <audio controls id="preview-audio-player"></audio>
+        <div class="row">
+            <label>
+                <input type="range" min="0" max="1" step="0.05" value="0" id="gain-slider-input">
+                Gain
+            </label>
+            <label>
+                <input type="range" min="0" max="1" step="0.05" value="0" id="low-slider-input">
+                Low
+            </label>
+            <label>
+                <input type="range" min="0" max="1" step="0.05" value="0" id="mid-slider-input">
+                Mid
+            </label>
+            <label>
+                <input type="range" min="0" max="1" step="0.05" value="0" id="treble-slider-input">
+                Treble
+            </label>
+        </div>
+
         <label>
-            <input type="button" id="upload-button" value="Submit">
+            <input type="button" id="upload-button" disabled value="Submit">
         </label>
-        <audio controls id="audio-player">
+
+        <h2>Result</h2>
+        <div class="row readonly">
+            <label>
+                <input type="range" min="0" max="1" step="0.05" value="0" id="gain-slider-output">
+                Gain
+            </label>
+            <label>
+                <input type="range" min="0" max="1" step="0.05" value="0" id="low-slider-output">
+                Low
+            </label>
+            <label>
+                <input type="range" min="0" max="1" step="0.05" value="0" id="mid-slider-output">
+                Mid
+            </label>
+            <label>
+                <input type="range" min="0" max="1" step="0.05" value="0" id="treble-slider-output">
+                Treble
+            </label>
+        </div>
+        <audio controls id="result-audio-player">
         </audio>
     </div>
-
 </main>
 
 <script src="script.js"></script>

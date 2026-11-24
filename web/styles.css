@@ -1,7 +1,23 @@
-.hidden{
+.hidden {
     display: None;
 }
-.column{
+
+.column {
     display: flex;
     flex-direction: column;
+}
+
+.row {
+    display: flex;
+    flex-direction: row;
+}
+
+.row > label {
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+}
+
+.readonly{
+    user-select: none;
 }
