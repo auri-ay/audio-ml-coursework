@@ -10,6 +10,11 @@ from flask import Flask, request
 import soundfile
 from pedalboard_native.io import AudioFile
 import numpy as np
+import pickle
+from shared import SharedCollection, NaiveModel
+
+with open("dump/classical.pickel", "rb") as f:
+    classical: SharedCollection = pickle.load(f)
 
 
 class DataURL(TypedDict):
@@ -93,8 +98,11 @@ def thing():
     x_mono = librosa.to_mono(x_stereo)
     sr = 22050
     x = librosa.resample(x_mono, orig_sr=original_sr, target_sr=sr) # librosa default sample rate
+
     # modify x as needed here
     x = process_audio(body["setting"], x, sr)
+
+    print(classical.model(classical.scaler.transform(x)))
 
     output = io.BytesIO()
     soundfile.write(output, x, sr, format="ogg")
