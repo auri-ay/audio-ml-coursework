@@ -1,4 +1,5 @@
-const uploadButton = document.getElementById("upload-button")
+const uploadButton = document.getElementById("upload-button");
+const resetButton = document.getElementById("reset-button");
 const fileUpload = document.getElementById("file-upload");
 const previewAudioPlayer = document.getElementById("preview-audio-player");
 const resultAudioPlayer = document.getElementById("result-audio-player");
@@ -11,7 +12,7 @@ const lowSliderOutput = document.getElementById("low-slider-output");
 const midSliderOutput = document.getElementById("mid-slider-output");
 const trebleSliderOutput = document.getElementById("treble-slider-output");
 
-fileUpload.onchange = ()=>{
+fileUpload.onchange = () => {
     uploadButton.disabled = fileUpload.files.length !== 1;
     previewFileReader.readAsDataURL(fileUpload.files[0]);
 }
@@ -50,6 +51,23 @@ uploadButton.onclick = () => {
     uploadedFileReader.readAsDataURL(fileUpload.files[0]);
 }
 
+resetButton.onclick = () => {
+    uploadButton.disabled = false;
+    previewFileReader.abort();
+    uploadedFileReader.abort();
+    previewAudioPlayer.src = "";
+    resultAudioPlayer.src = "";
+    gainSliderInput.value = 0;
+    lowSliderInput.value = 0;
+    midSliderInput.value = 0;
+    trebleSliderInput.value = 0;
+    gainSliderOutput.value = 0;
+    lowSliderOutput.value = 0;
+    midSliderOutput.value = 0;
+    trebleSliderOutput.value = 0;
+    fileUpload.value = ""
+}
+
 function sendPost() {
     const xhr = new XMLHttpRequest();
     xhr.open("POST", "/api/applyVst");
@@ -73,6 +91,6 @@ function sendPost() {
     }
 }
 
-function updatePreview(){
+function updatePreview() {
     previewAudioPlayer.src = previewFile;
 }
