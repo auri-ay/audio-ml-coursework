@@ -15,65 +15,47 @@
 <main>
     <div class="column">
         <h1>Proof of concept</h1>
-        <h2>Upload</h2>
-        <label>
+
+        <div>
+            <h2>Upload</h2>
             <input type="file" id="file-upload" accept="audio/*">
-        </label>
-        <h2>Preview</h2>
-        <audio controls id="preview-audio-player"></audio>
-        <h2>Settings</h2>
-        <div class="row">
-            <label>
-                <input type="range" min="0" max="1" step="0.05" value="0" id="gain-slider-input">
-                Gain
-            </label>
-            <label>
-                <input type="range" min="0" max="1" step="0.05" value="0" id="low-slider-input">
-                Low
-            </label>
-            <label>
-                <input type="range" min="0" max="1" step="0.05" value="0" id="mid-slider-input">
-                Mid
-            </label>
-            <label>
-                <input type="range" min="0" max="1" step="0.05" value="0" id="treble-slider-input">
-                Treble
-            </label>
+        </div>
+
+        <div>
+            <h2>Preview</h2>
+            <audio controls id="preview-audio-player"></audio>
         </div>
 
         <div class="row">
-            <label>
-                <input type="button" id="upload-button" disabled value="Submit">
-            </label>
-            <label>
-                <input type="button" id="reset-button" value="Reset">
-            </label>
+            <input type="button" id="upload-button" disabled value="Submit">
+            <input type="button" id="reset-button" value="Reset">
         </div>
 
-        <h2>Prediction</h2>
-        <div class="row readonly">
+        <div>
+            <h2>Prediction</h2>
+            <div class="row readonly label-on-bottom">
+                <label>
+                    <input type="range" min="0" max="1" step="0.05" value="0" id="gain-slider-output">
+                    Gain
+                </label>
+                <label>
+                    <input type="range" min="0" max="1" step="0.05" value="0" id="low-slider-output">
+                    Low
+                </label>
+                <label>
+                    <input type="range" min="0" max="1" step="0.05" value="0" id="mid-slider-output">
+                    Mid
+                </label>
+                <label>
+                    <input type="range" min="0" max="1" step="0.05" value="0" id="treble-slider-output">
+                    Treble
+                </label>
+            </div>
+            <audio controls id="result-audio-player"></audio>
             <label>
-                <input type="range" min="0" max="1" step="0.05" value="0" id="gain-slider-output">
-                Gain
-            </label>
-            <label>
-                <input type="range" min="0" max="1" step="0.05" value="0" id="low-slider-output">
-                Low
-            </label>
-            <label>
-                <input type="range" min="0" max="1" step="0.05" value="0" id="mid-slider-output">
-                Mid
-            </label>
-            <label>
-                <input type="range" min="0" max="1" step="0.05" value="0" id="treble-slider-output">
-                Treble
+                <input type="button" value="Reset" id="prediction-reset-button">
             </label>
         </div>
-        <audio controls id="result-audio-player">
-        </audio>
-        <label>
-            <input type="button" value="Reset" id="prediction-reset-button">
-        </label>
     </div>
 </main>
 

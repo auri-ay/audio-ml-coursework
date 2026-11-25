@@ -35,6 +35,20 @@ def calculate_features(f: Callable[[pd.Series, np.ndarray, int], pd.Series], row
 
     return f(new_row, x, sr)
 
+def _classical_features(new_row: pd.Series, x: np.ndarray, sr: int):
+    S = np.abs(librosa.stft(x))
+
+    r = rms(S=S)[0]
+    sc = spectral_centroid(y=x, sr=sr)[0]
+    zcr = zero_crossing_rate(x)[0]
+    new_row["root_mean_square_mean"] = np.mean(r)
+    new_row["root_mean_square_variance"] = np.var(r)
+    new_row["spectral_centroid_mean"] = np.mean(sc)
+    new_row["spectral_centroid_variance"] = np.var(sc)
+    new_row["zero_crossing_rate_mean"] = np.mean(zcr)
+    new_row["zero_crossing_rate_variance"] = np.var(zcr)
+
+    return new_row
 
 @overload
 def calculate_classical_features(row: pd.Series) -> pd.Series: ...
@@ -46,23 +60,19 @@ def calculate_classical_features(row: np.ndarray, sample_rate: int) -> pd.Series
 
 def calculate_classical_features(row: pd.Series | np.ndarray | None = None,
                                  sample_rate: None | int = None) -> pd.Series:
-    def _inner(new_row, x, sr):
-        S = np.abs(librosa.stft(x))
+    return calculate_features(_classical_features, row, sample_rate)
 
-        r = rms(S=S)[0]
-        sc = spectral_centroid(y=x, sr=sr)[0]
-        zcr = zero_crossing_rate(x)[0]
-        new_row["root_mean_square_mean"] = np.mean(r)
-        new_row["root_mean_square_variance"] = np.var(r)
-        new_row["spectral_centroid_mean"] = np.mean(sc)
-        new_row["spectral_centroid_variance"] = np.var(sc)
-        new_row["zero_crossing_rate_mean"] = np.mean(zcr)
-        new_row["zero_crossing_rate_variance"] = np.var(zcr)
+@overload
+def calculate_normalised_classical_features(row: pd.Series) -> pd.Series: ...
 
-        return new_row
 
-    return calculate_features(_inner, row, sample_rate)
+@overload
+def calculate_normalised_classical_features(row: np.ndarray, sample_rate: int) -> pd.Series: ...
 
+
+def calculate_normalised_classical_features(row: pd.Series | np.ndarray | None = None,
+                                 sample_rate: None | int = None) -> pd.Series:
+    return calculate_features(_classical_features, row, sample_rate)
 
 @overload
 def calculate_cnn_features(row: pd.Series) -> pd.Series: ...
@@ -77,3 +87,4 @@ def calculate_cnn_features(row: pd.Series | np.ndarray | None = None, sample_rat
         return new_row
 
     return calculate_features(_inner, row, sample_rate)
+

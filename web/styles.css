@@ -12,13 +12,24 @@
     flex-direction: row;
 }
 
-.row > label {
+.label-on-bottom > label {
     display: flex;
     flex-direction: column;
-    text-align: center;
 }
 
 .readonly{
     user-select: none;
+}
 
+#samples .row {
+    align-items: center;
+    gap: 10px;
+}
+
+label{
+    align-items: center;
+}
+
+#bottom-text > .row{
+    gap: 10px
 }

@@ -1,79 +1,36 @@
-import base64
 import io
-from dataclasses import dataclass
-from pathlib import Path
-from typing import TypedDict, cast, overload, Any, Unpack, NamedTuple, ReadOnly
 import flask
 import librosa
-import pedalboard
-import torch
 from flask import Flask, request
 import soundfile
 from pedalboard_native.io import AudioFile
 import numpy as np
 import pickle
-from shared import SharedCollection, flatten, to_tensor,  AmpSetting
-from shared.features import calculate_classical_features
+
+from data import DataURL, PostRequest, parse_request, convert_response
+from shared import SharedCollection, to_tensor,  AmpSetting
 from shared.model import NaiveModel
-from processing import process_audio
-
-
-with open("../dump/classical.pickel", "rb") as f:
-    classical: SharedCollection = pickle.load(f)
-
-
-class DataURL(TypedDict):
-    media_type: str | None
-    data: bytes
-
-
-
-class PostRequest[D: str | DataURL](TypedDict):
-    setting: AmpSetting
-    dataUrl: D
-
-
-def parse_request(r: PostRequest[str]) -> PostRequest[DataURL]:
-    n = cast(PostRequest[DataURL], r)
-    n["dataUrl"] = parse_data_url(r["dataUrl"])
-    return n
-
-
-def convert_response(r: PostRequest[DataURL]) -> PostRequest[str]:
-    n = cast(PostRequest[str], r)
-    n["dataUrl"] = dataurl_to_str(r["dataUrl"])
-    return n
-
-
-def parse_data_url(s: str) -> DataURL:
-    s = s.split(":")[1]
-    optional, data = s.split(",")
-    try:
-        media_type, b64 = optional.split(";")
-    except ValueError:
-        media_type = None
-        b64 = None
-
-    if b64 == "base64":
-        data = base64.b64decode(data)
-    else:
-        raise Exception(f"Invalid data url, expected base64: {data}")
-
-    return DataURL(media_type=media_type, data=data)
-
-
-def dataurl_to_str(s: DataURL) -> str:
-    return f"data:{s["media_type"]};base64,{base64.b64encode(s["data"]).decode("ascii")}"
-
-
+from shared.features import calculate_classical_features
 
 app = Flask(__name__)
 
+app.secret_key = "4"
 
+try:
+    from processing import process_audio
+except ImportError:
+    print("\033[31mERROR: Failed to import VST processing, effects will not be applied\033[0m")
+    def process_audio(setting: AmpSetting, x: np.ndarray, sr: int) -> np.ndarray:
+        return x
+
+with open("dump/classical.pickel", "rb") as f:
+    classical: SharedCollection = pickle.load(f)
 @app.route('/')
 def index():
     return flask.send_file("../web/index.html")
-
+@app.route('/ab-testing')
+def ab_testing():
+    return flask.send_file("../web/ab-testing.html")
 
 @app.route('/<path:path>')
 def serve(path):

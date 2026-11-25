@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+<h1>AB Testing</h1>
+<div id="ground-truth">
+    <h2>Ground Truth</h2>
+    <audio controls id="audio-ground-truth"></audio>
+</div>
+
+<div id="samples">
+    <h2>Samples</h2>
+    <div class="column">
+        <div class="row">
+            <label>
+                <input type="radio" name="sample" value="a">
+                Sample A
+            </label>
+            <audio controls></audio>
+        </div>
+
+        <div class="row">
+            <label>
+                <input type="radio" name="sample" value="b">
+                Sample B
+            </label>
+            <audio controls></audio>
+        </div>
+
+    </div>
+</div>
+
+<div id="bottom-text">
+    <h2>Bottom Text</h2>
+    <div class="row">
+        <input type="button" value="Back" disabled>
+        <label class="row">
+            <input type="text">/<span id="test-count-label">10000</span>
+        </label>
+        <input type="button" value="Next" disabled>
+    </div>
+</div>
+</body>
+</html>

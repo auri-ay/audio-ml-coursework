@@ -54,7 +54,7 @@ uploadButton.onclick = () => {
 }
 
 resetButton.onclick = () => {
-    uploadButton.disabled = false;
+    uploadButton.disabled = true;
     previewFileReader.abort();
     uploadedFileReader.abort();
     previewAudioPlayer.src = "";
@@ -96,6 +96,9 @@ function sendPost() {
             lowSliderOutput.value = data["setting"]["low"];
             midSliderOutput.value = data["setting"]["mid"];
             trebleSliderOutput.value = data["setting"]["treble"];
+            uploadButton.disabled = false;
+        }else{
+            alert("Server   responded with a non 200 response")
             uploadButton.disabled = false;
         }
     }
