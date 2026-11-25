@@ -1,0 +1,13 @@
+###
+POST http://localhost:5000/api/thing
+Content-Type: application/json
+
+{
+  "setting": {
+    "gain": 0.5,
+    "low": 0.3,
+    "mid": 0.1,
+    "treble": 0.4
+  },
+  "base64": ""
+}
