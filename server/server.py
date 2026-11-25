@@ -12,11 +12,13 @@ import soundfile
 from pedalboard_native.io import AudioFile
 import numpy as np
 import pickle
-from shared import SharedCollection, NaiveModel, calculate_classical_features, flatten, to_tensor,  AmpSetting
+from shared import SharedCollection, flatten, to_tensor,  AmpSetting
+from shared.features import calculate_classical_features
+from shared.model import NaiveModel
 from processing import process_audio
 
 
-with open("dump/classical.pickel", "rb") as f:
+with open("../dump/classical.pickel", "rb") as f:
     classical: SharedCollection = pickle.load(f)
 
 
@@ -70,12 +72,12 @@ app = Flask(__name__)
 
 @app.route('/')
 def index():
-    return flask.send_file("web/index.html")
+    return flask.send_file("../web/index.html")
 
 
 @app.route('/<path:path>')
 def serve(path):
-    return flask.send_from_directory("web/", path)
+    return flask.send_from_directory("../web/", path)
 
 
 @app.route('/api/applyVst', methods=['POST'])
