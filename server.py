@@ -6,12 +6,13 @@ from typing import TypedDict, cast, overload, Any, Unpack, NamedTuple, ReadOnly
 import flask
 import librosa
 import pedalboard
+import torch
 from flask import Flask, request
 import soundfile
 from pedalboard_native.io import AudioFile
 import numpy as np
 import pickle
-from shared import SharedCollection, NaiveModel
+from shared import SharedCollection, NaiveModel, calculate_classical_features, flatten, to_tensor
 
 with open("dump/classical.pickel", "rb") as f:
     classical: SharedCollection = pickle.load(f)
@@ -69,7 +70,6 @@ def dataurl_to_str(s: DataURL) -> str:
 
 def process_audio(setting: AmpSetting, x, sr):
     # code to process X using the setting
-    print(setting)
     return x
 
 
@@ -102,13 +102,14 @@ def thing():
     # modify x as needed here
     x = process_audio(body["setting"], x, sr)
 
-    print(classical.model(classical.scaler.transform(x)))
+    result = classical.model.to("cpu")(to_tensor(classical.scaler.transform(calculate_classical_features(x, sr).to_numpy().reshape(1, -1))))[0]
+    pred = AmpSetting(gain=result[0].item(),low=result[1].item(), mid=result[2].item(),treble=result[3].item())
 
     output = io.BytesIO()
     soundfile.write(output, x, sr, format="ogg")
 
     response = PostRequest(dataUrl=DataURL(data=output.getvalue(), media_type="audio/ogg"),
-                           setting=body["setting"])
+                           setting=pred)
 
     return convert_response(response)
 
