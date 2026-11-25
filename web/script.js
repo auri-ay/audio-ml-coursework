@@ -11,6 +11,8 @@ const gainSliderOutput = document.getElementById("gain-slider-output");
 const lowSliderOutput = document.getElementById("low-slider-output");
 const midSliderOutput = document.getElementById("mid-slider-output");
 const trebleSliderOutput = document.getElementById("treble-slider-output");
+const predictionResetButton = document.getElementById("prediction-reset-button")
+
 
 fileUpload.onchange = () => {
     uploadButton.disabled = fileUpload.files.length !== 1;
@@ -67,6 +69,14 @@ resetButton.onclick = () => {
     trebleSliderOutput.value = 0;
     fileUpload.value = ""
 }
+predictionResetButton.onclick = () => {
+    resultAudioPlayer.src = "";
+    gainSliderOutput.value = 0;
+    lowSliderOutput.value = 0;
+    midSliderOutput.value = 0;
+    trebleSliderOutput.value = 0;
+}
+
 
 function sendPost() {
     const xhr = new XMLHttpRequest();
