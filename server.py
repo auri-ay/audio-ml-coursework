@@ -12,7 +12,9 @@ import soundfile
 from pedalboard_native.io import AudioFile
 import numpy as np
 import pickle
-from shared import SharedCollection, NaiveModel, calculate_classical_features, flatten, to_tensor
+from shared import SharedCollection, NaiveModel, calculate_classical_features, flatten, to_tensor,  AmpSetting
+from processing import process_audio
+
 
 with open("dump/classical.pickel", "rb") as f:
     classical: SharedCollection = pickle.load(f)
@@ -22,12 +24,6 @@ class DataURL(TypedDict):
     media_type: str | None
     data: bytes
 
-
-class AmpSetting(TypedDict):
-    gain: float
-    low: float
-    mid: float
-    treble: float
 
 
 class PostRequest[D: str | DataURL](TypedDict):
@@ -67,10 +63,6 @@ def parse_data_url(s: str) -> DataURL:
 def dataurl_to_str(s: DataURL) -> str:
     return f"data:{s["media_type"]};base64,{base64.b64encode(s["data"]).decode("ascii")}"
 
-
-def process_audio(setting: AmpSetting, x, sr):
-    # code to process X using the setting
-    return x
 
 
 app = Flask(__name__)

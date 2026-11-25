@@ -1,4 +1,4 @@
-from typing import NamedTuple, Callable, overload
+from typing import NamedTuple, Callable, TypedDict, overload
 
 import librosa
 import numpy as np
@@ -91,3 +91,10 @@ def flatten(x: pd.DataFrame) -> np.ndarray:
     x = x.apply(lambda row: row.to_numpy(), axis=1)
     # pyrefly: ignore[no-matching-overload]
     return np.vstack(x.to_numpy()).astype(np.float32)
+
+
+class AmpSetting(TypedDict):
+    gain: float
+    low: float
+    mid: float
+    treble: float
