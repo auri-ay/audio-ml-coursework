@@ -3,3 +3,5 @@ data/*
 dump/*
 !dump/.gitkeep
 .idea/
+.DS_Store
+__pycache__/*
