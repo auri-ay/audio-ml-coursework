@@ -13,19 +13,20 @@ from ..shared.misc import to_tensor
 from ..shared.data import SharedCollection, AmpSetting
 from ..shared.features import calculate_classical_features
 
+try:
+    from .processing import process_audio
+except ImportError as e:
+    print(e)
+
+    print("\033[31mERROR: Failed to import VST processing, effects will not be applied\033[0m")
+
+    def process_audio(setting: AmpSetting, x: np.ndarray, sr: int) -> np.ndarray:
+        return x
 
 def create_app(test_config=None):
     app = Flask(__name__, instance_relative_config=True)
 
     app.secret_key = "4"
-
-    try:
-        from processing import process_audio
-    except ImportError:
-        print("\033[31mERROR: Failed to import VST processing, effects will not be applied\033[0m")
-
-        def process_audio(setting: AmpSetting, x: np.ndarray, sr: int) -> np.ndarray:
-            return x
 
     with open("dump/classical.pickel", "rb") as f:
         classical: SharedCollection = pickle.load(f)
