@@ -61,10 +61,10 @@ def create_app(test_config=None):
         original = io.BytesIO()
         soundfile.write(original, normalised_x, sr, format="ogg")
 
-        x = process_audio(body["setting"], x, sr)
+        ground_truth_x = process_audio(body["setting"], normalised_x, sr)
 
         ground_truth = io.BytesIO()
-        soundfile.write(ground_truth, normalised_x, sr, format="ogg")
+        soundfile.write(ground_truth, normalise_volume(ground_truth_x), sr, format="ogg")
 
         result = classical.model(
             to_tensor(classical.scaler.transform(calculate_classical_features(x, sr).to_numpy().reshape(1, -1))))[0]
@@ -72,8 +72,10 @@ def create_app(test_config=None):
 
         predicted_x = process_audio(pred, normalised_x, sr)
 
+        print(predicted_x)
+
         predicted = io.BytesIO()
-        soundfile.write(predicted, predicted_x, sr, format="ogg")
+        soundfile.write(predicted, normalise_volume(predicted_x), sr, format="ogg")
 
         response = Response(original=DataURL(data=original.getvalue(), media_type="audio/ogg"),
                             groundTruth=DataURL(data=ground_truth.getvalue(), media_type="audio/ogg"),
