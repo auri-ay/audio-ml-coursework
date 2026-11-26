@@ -33,3 +33,7 @@ label{
 #bottom-text > .row{
     gap: 10px
 }
+
+.column audio{
+    align-self: flex-start;
+}

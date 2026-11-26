@@ -1,4 +1,4 @@
-from shared import AmpSetting
+from audioml.shared.data import AmpSetting
 import pedalboard
 import numpy as np
 

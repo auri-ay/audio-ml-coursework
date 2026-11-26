@@ -1,3 +1,4 @@
+from functools import partial
 from typing import Callable, overload
 
 import librosa
@@ -5,7 +6,7 @@ import numpy as np
 import pandas as pd
 from librosa.feature import rms, spectral_centroid, zero_crossing_rate
 
-from shared import DEFAULT_SAMPLE_RATE
+from . import DEFAULT_SAMPLE_RATE
 
 
 def calculate_features(f: Callable[[pd.Series, np.ndarray, int], pd.Series], row: pd.Series | np.ndarray | None = None,
@@ -35,7 +36,12 @@ def calculate_features(f: Callable[[pd.Series, np.ndarray, int], pd.Series], row
 
     return f(new_row, x, sr)
 
-def _classical_features(new_row: pd.Series, x: np.ndarray, sr: int):
+
+def _classical_features(new_row: pd.Series, x: np.ndarray, sr: int, normalise: bool = False):
+    if normalise:
+        x = x / np.max(np.abs(x)) * np.iinfo(x.dtype).max
+        print(np.iinfo(x.dtype).max)
+
     S = np.abs(librosa.stft(x))
 
     r = rms(S=S)[0]
@@ -50,6 +56,7 @@ def _classical_features(new_row: pd.Series, x: np.ndarray, sr: int):
 
     return new_row
 
+
 @overload
 def calculate_classical_features(row: pd.Series) -> pd.Series: ...
 
@@ -62,6 +69,7 @@ def calculate_classical_features(row: pd.Series | np.ndarray | None = None,
                                  sample_rate: None | int = None) -> pd.Series:
     return calculate_features(_classical_features, row, sample_rate)
 
+
 @overload
 def calculate_normalised_classical_features(row: pd.Series) -> pd.Series: ...
 
@@ -71,8 +79,9 @@ def calculate_normalised_classical_features(row: np.ndarray, sample_rate: int) -
 
 
 def calculate_normalised_classical_features(row: pd.Series | np.ndarray | None = None,
-                                 sample_rate: None | int = None) -> pd.Series:
-    return calculate_features(_classical_features, row, sample_rate)
+                                            sample_rate: None | int = None) -> pd.Series:
+    return calculate_features(partial(_classical_features, normalise =True), row, sample_rate)
+
 
 @overload
 def calculate_cnn_features(row: pd.Series) -> pd.Series: ...
@@ -87,4 +96,3 @@ def calculate_cnn_features(row: pd.Series | np.ndarray | None = None, sample_rat
         return new_row
 
     return calculate_features(_inner, row, sample_rate)
-

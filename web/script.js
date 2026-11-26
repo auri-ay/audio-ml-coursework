@@ -1,8 +1,9 @@
 const uploadButton = document.getElementById("upload-button");
 const resetButton = document.getElementById("reset-button");
 const fileUpload = document.getElementById("file-upload");
-const previewAudioPlayer = document.getElementById("preview-audio-player");
-const resultAudioPlayer = document.getElementById("result-audio-player");
+const originalAudioPlayer = document.getElementById("original-audio-player");
+const groundTruthAudioPlayer = document.getElementById("ground-truth-audio-player");
+const predictionAudioPlayer = document.getElementById("prediction-audio-player");
 const gainSliderInput = document.getElementById("gain-slider-input");
 const lowSliderInput = document.getElementById("low-slider-input");
 const midSliderInput = document.getElementById("mid-slider-input");
@@ -16,7 +17,6 @@ const predictionResetButton = document.getElementById("prediction-reset-button")
 
 fileUpload.onchange = () => {
     uploadButton.disabled = fileUpload.files.length !== 1;
-    previewFileReader.readAsDataURL(fileUpload.files[0]);
 }
 
 class Setting {
@@ -26,13 +26,6 @@ class Setting {
         this.mid = mid;
         this.treble = treble
     }
-}
-
-let previewFile = null;
-const previewFileReader = new FileReader();
-previewFileReader.onload = (e) => {
-    previewFile = e.target.result;
-    updatePreview()
 }
 
 let uploadedFile = null;
@@ -55,10 +48,10 @@ uploadButton.onclick = () => {
 
 resetButton.onclick = () => {
     uploadButton.disabled = true;
-    previewFileReader.abort();
     uploadedFileReader.abort();
-    previewAudioPlayer.src = "";
-    resultAudioPlayer.src = "";
+    originalAudioPlayer.src = "";
+    groundTruthAudioPlayer.src = "";
+    predictionAudioPlayer.src = "";
     gainSliderInput.value = 0;
     lowSliderInput.value = 0;
     midSliderInput.value = 0;
@@ -70,7 +63,7 @@ resetButton.onclick = () => {
     fileUpload.value = ""
 }
 predictionResetButton.onclick = () => {
-    resultAudioPlayer.src = "";
+    predictionAudioPlayer.src = "";
     gainSliderOutput.value = 0;
     lowSliderOutput.value = 0;
     midSliderOutput.value = 0;
@@ -91,7 +84,9 @@ function sendPost() {
         if (xhr.status === 200) {
             const data = JSON.parse(xhr.responseText);
             console.log(data)
-            resultAudioPlayer.src = data["dataUrl"];
+            originalAudioPlayer.src = data["original"];
+            groundTruthAudioPlayer.src = data["groundTruth"];
+            predictionAudioPlayer.src = data["prediction"];
             gainSliderOutput.value = data["setting"]["gain"];
             lowSliderOutput.value = data["setting"]["low"];
             midSliderOutput.value = data["setting"]["mid"];
@@ -102,8 +97,4 @@ function sendPost() {
             uploadButton.disabled = false;
         }
     }
-}
-
-function updatePreview() {
-    previewAudioPlayer.src = previewFile;
 }

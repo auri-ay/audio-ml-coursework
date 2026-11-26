@@ -1,7 +1,7 @@
 import base64
 from typing import TypedDict, cast
 
-from shared import AmpSetting
+from audioml.shared.data import AmpSetting
 
 
 class DataURL(TypedDict):
@@ -13,6 +13,11 @@ class PostRequest[D: str | DataURL](TypedDict):
     setting: AmpSetting
     dataUrl: D
 
+class Response[D: str | DataURL](TypedDict):
+    setting: AmpSetting
+    original: D
+    groundTruth: D
+    prediction: D
 
 def parse_request(r: PostRequest[str]) -> PostRequest[DataURL]:
     n = cast(PostRequest[DataURL], r)
@@ -20,9 +25,11 @@ def parse_request(r: PostRequest[str]) -> PostRequest[DataURL]:
     return n
 
 
-def convert_response(r: PostRequest[DataURL]) -> PostRequest[str]:
-    n = cast(PostRequest[str], r)
-    n["dataUrl"] = dataurl_to_str(r["dataUrl"])
+def convert_response(r: Response[DataURL]) -> Response[str]:
+    n = cast(Response[str], r)
+    n["original"] = dataurl_to_str(r["original"])
+    n["groundTruth"] = dataurl_to_str(r["groundTruth"])
+    n["prediction"] = dataurl_to_str(r["prediction"])
     return n
 
 
