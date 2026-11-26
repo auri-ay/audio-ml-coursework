@@ -64,7 +64,7 @@ def create_app(test_config=None):
         x = process_audio(body["setting"], x, sr)
 
         ground_truth = io.BytesIO()
-        soundfile.write(ground_truth, normalise_volume(x), sr, format="ogg")
+        soundfile.write(ground_truth, normalised_x, sr, format="ogg")
 
         result = classical.model(
             to_tensor(classical.scaler.transform(calculate_classical_features(x, sr).to_numpy().reshape(1, -1))))[0]
