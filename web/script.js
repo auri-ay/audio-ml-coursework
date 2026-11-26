@@ -35,15 +35,16 @@ uploadedFileReader.onload = (e) => {
     sendPost();
 }
 
-let resultFile = null;
-const resultFileReader = new FileReader();
-resultFileReader.onload = (e) => {
-    resultFile = e.target.result;
-}
-
 uploadButton.onclick = () => {
     uploadButton.disabled = true;
     uploadedFileReader.readAsDataURL(fileUpload.files[0]);
+    originalAudioPlayer.src = "";
+    groundTruthAudioPlayer.src = "";
+    predictionAudioPlayer.src = "";
+    gainSliderOutput.value = 0;
+    lowSliderOutput.value = 0;
+    midSliderOutput.value = 0;
+    trebleSliderOutput.value = 0;
 }
 
 resetButton.onclick = () => {
